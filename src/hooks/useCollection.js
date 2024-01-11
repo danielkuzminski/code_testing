@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {db} from '../.firebase/config'
+import {db} from '../firebase/config'
 import { onSnapshot, collection } from "firebase/firestore";
 
 // c = collection to which we refer
