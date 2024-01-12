@@ -6,6 +6,7 @@ import AddGame from './pages/AddGame';
 
 //routing
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <BrowserRouter>
         {/* anything outside routes would be displayed on every page */}
         {/* create navbar here! */}
+        <Navbar />
         <Routes>
           <Route path='/games' element={<Games />} />
           <Route path='/add_game' element={<AddGame />} />

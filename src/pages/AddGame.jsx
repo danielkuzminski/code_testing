@@ -2,21 +2,86 @@
 import './AddGame.css'
 
 //react
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+//firebase
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { getDownloadURL, ref } from 'firebase/storage'
+import { uploadBytesResumable } from 'firebase/storage'
+
+//config
+import { db, storage } from '../firebase/config'
+
+//router
+import { useNavigate } from 'react-router-dom'
+
 
 export default function AddGame() {
 
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
-    const [checkPs4, setCheckPs4] = useState(null)
-    const [checkPs5, setCheckPs5] = useState(null)
-    const [checkNs, setCheckNs] = useState(null)
     const [platforms, setPlatforms] = useState([])
+    const [file, setFile] = useState(null)
+    const [progress, setProgress] = useState(0)
+    const [fileURL, setFileURL] = useState('')
+
+    const navigate = useNavigate()
+
+    const uploadFile = (data) => {
+        if(!data) return
+
+        const storageRef = ref(storage, `/images/`)
+
+        const uploadTask = uploadBytesResumable(storageRef, data)
+
+        uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+                const prog = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) *100
+                    )
+                    setProgress(prog)},
+                    (err) => {console.log(err.message)},
+                    () => {getDownloadURL(uploadTask.snapshot.ref).then((url => {
+                        setFileURL(url)
+                        console.log(url)
+                    }))
+                }
+        )
+    } 
+
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        console.log(title, platforms, description)
+        let ref = collection(db, 'games')
+        // console.log(title, platforms, description)
+
+        const createdAt = serverTimestamp()
+
+        uploadFile(file)
+        await addDoc(ref, {title, description, platforms, createdAt, fileURL})
+
+        navigate('/games')
+        // resetForm()
+    }
+
+    const addPlatforms = (platform) => {
+        setPlatforms((prev) => {
+            if(prev.includes(platform) || platform === null) {
+                return prev
+            } else {
+                return [...prev, platform]
+
+            }     
+        })
+    }
+
+    const resetForm = () => {
+        setTitle('')
+        setDescription('')
+        setPlatforms([])
+        
     }
 
   return (
@@ -28,37 +93,39 @@ export default function AddGame() {
                 type="text"
                 onChange={(e) => {
                     setTitle(e.target.value)
-                }} 
+                }}
+                value={title}
             />
         </label>
         <div>
             <span>choose platforms: </span>
             <div>
-                <input type="checkbox" value="ps4" onChange={(e) => {
+                <input type="checkbox" onChange={(e) => {
                     if(e.target.checked){
-                        setCheckPs4(e.target.value)
+                        addPlatforms('ps4')
                     } else {
-                        setCheckPs4(null)
+                        addPlatforms(null)
                     }
-                }}/>
+                }}
+                />
                 <label>Playstation 4</label>
             </div>
             <div>
-                <input type="checkbox" value="ps5" onChange={(e) => {
+                <input type="checkbox" onChange={(e) => {
                     if(e.target.checked){
-                        setCheckPs5(e.target.value)
+                        addPlatforms('ps5')
                     } else {
-                        setCheckPs5(null)
+                        addPlatforms(null)
                     }
                 }} />
                 <label>Playstation 5</label>
             </div>
             <div>
-                <input type="checkbox" value="NS" onChange={(e) => {
+                <input type="checkbox" onChange={(e) => {
                     if(e.target.checked){
-                        setCheckNs(e.target.value)
+                        addPlatforms('ns')
                     } else {
-                        setCheckNs(null)
+                        addPlatforms(null)
                     }
                 }} />
                 <label>Nintendo Switch</label>
@@ -66,9 +133,18 @@ export default function AddGame() {
         </div>
         <label>
             <span>Add description:</span>
-            <textarea onChange={(e) => {
+            <textarea 
+                onChange={(e) => {
                 setDescription(e.target.value)
-            }}></textarea>
+                }}
+                value={description}
+                ></textarea>
+        </label>
+        <label>
+            <span>add picture: </span>
+            <input type="file" onChange={(e) => {
+                setFile(e.target[0].files[0])
+            }}/>
         </label>
         <button type='submit'>Submit</button>
     </form>
@@ -76,4 +152,4 @@ export default function AddGame() {
 }
 
 
-// add checkbox datas to platforms array
+// make checkbox unchecked
