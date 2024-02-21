@@ -85,12 +85,13 @@ export default function AddGame() {
     }
 
   return (
-    <form onSubmit={handleSubmit}>
-        <h2>Add game</h2>
+    <form className='add__form' onSubmit={handleSubmit}>
+        <h2 className='form__title'>Add game</h2>
         <label>
             <span>game title: </span>
             <input 
                 type="text"
+                required
                 onChange={(e) => {
                     setTitle(e.target.value)
                 }}

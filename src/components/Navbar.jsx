@@ -12,7 +12,7 @@ export default function Navbar() {
             <li className='nav-item'><NavLink to='/add_game'>Add Games</NavLink></li>
             <li className='nav-item'><NavLink>to be added</NavLink></li>
             <li className='nav-item'><NavLink>to be added</NavLink></li>
-            <li className='nav-item'><NavLink>sign in</NavLink></li>
+            <li className='nav-item'><NavLink to='/login'>Login</NavLink></li>
         </ul>
     </nav>
   )
