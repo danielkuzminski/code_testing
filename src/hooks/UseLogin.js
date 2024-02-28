@@ -1,28 +1,42 @@
 import { auth } from "../firebase/config"
 import { signInWithEmailAndPassword } from "firebase/auth"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
 
 export const useLogin = () => {
 	const [error, setError] = useState(null)
 	const [pending, setPending] = useState(false)
+	const [isCancelled, setIsCancelled] = useState(false)
 
 	const { dispatch } = useAuthContext()
 
 	const login = async (email, password) => {
-		setError(null)
-		setPending(true)
+		if (!isCancelled) {
+			setError(null)
+			setPending(true)
+		}
 
 		try {
 			const res = await signInWithEmailAndPassword(auth, email, password)
 
 			dispatch({ type: "LOGIN", payload: res.user })
-			setPending(false)
+			if (!isCancelled) {
+				setPending(false)
+			}
 		} catch (error) {
 			console.log(error)
-			setError(error.message)
-			setPending(false)
+			if (!isCancelled) {
+				setError(error.message)
+				setPending(false)
+			}
 		}
 	}
+
+	useEffect(() => {
+		return () => {
+			setIsCancelled(true)
+		}
+	},[])
+
 	return { error, pending, login }
 }
