@@ -52,3 +52,11 @@
 .btn-submit:hover {
     background-color: #00aaff;
 }
+
+.back {
+    background-color: #f80;
+}
+
+.back:hover {
+    background-color: #faa13c;
+}

@@ -13,6 +13,7 @@ export default function Navbar() {
     <nav className='navigation'>
         <p className="title">code battleground</p>
         <ul className='nav-items'>
+            <li className='nav-item'><NavLink to='/'>Home</NavLink></li>
             <li className='nav-item'><NavLink to='/games'>Games</NavLink></li>
             <li className='nav-item'><NavLink to='/add_game'>Add Games</NavLink></li>
             <li className='nav-item'><NavLink>to be added</NavLink></li>

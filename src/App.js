@@ -14,6 +14,7 @@ import Navbar from './components/Navbar';
 
 //auth context
 import { useAuthContext } from './hooks/useAuthContext';
+import Home from './pages/Home';
 
 function App() {
   const {authIsReady, user} = useAuthContext()
@@ -23,10 +24,11 @@ function App() {
       {authIsReady && <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path='/' element={user ? <Home /> : <Navigate to='/login' />} />
           <Route path='/games' element={user ? <Games /> : <Navigate to='/login' />} />
-          <Route path='/add_game' element={<AddGame />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
+          <Route path='/add_game' element={user ? <AddGame /> : <Navigate to='/login' />} />
+          <Route path='/login' element={user ? <Home /> : <Login />} />
+          <Route path='/signup' element={user ? <Home /> : <Signup />} />
         </Routes>
       </BrowserRouter>}
     </div>
