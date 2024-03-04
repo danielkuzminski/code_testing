@@ -3,6 +3,7 @@ import "./Navbar.css"
 
 //hooks
 import { useLogout } from "../hooks/useLogout"
+import { useAuthContext } from "../hooks/useAuthContext"
 
 //router
 import { NavLink } from "react-router-dom"
@@ -13,6 +14,7 @@ import ps4 from "../assets/ps4.png"
 export default function Navbar() {
 	const { logout } = useLogout()
 
+	const {user} = useAuthContext()
 
 	return (
 		<nav className="navigation">
@@ -22,23 +24,23 @@ export default function Navbar() {
 			</p>
 			<ul className='nav-items'>
 				<li className="nav-item">
-					<NavLink to="/">Home</NavLink>
+					<NavLink to="/">Główna</NavLink>
 				</li>
 				<li className="nav-item">
 					<NavLink to="/games">Gry</NavLink>
 				</li>
 				<li className="nav-item">
-					<NavLink>Komiksy</NavLink>
+					<NavLink to='/comics'>Komiksy</NavLink>
 				</li>
-				<li className="nav-item">
+				{/* <li className="nav-item">
 					<NavLink to="/add_game">Dodaj</NavLink>
-				</li>
-				<li className="nav-item">
-					<NavLink to="/login">Login</NavLink>
-				</li>
+				</li> */}
+				{user ? 
 				<li className="nav-item" onClick={logout}>
-					<NavLink>logout</NavLink>
-				</li>
+					<NavLink>Wyloguj</NavLink>
+				</li> : <li className="nav-item">
+					<NavLink to="/login">Zaloguj</NavLink>
+				</li>}
 			</ul>
 		</nav>
 	)
